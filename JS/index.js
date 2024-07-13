@@ -1,38 +1,19 @@
-const database = [
-    {
-        username: '1', nombre: '1', apellido: '1', edad: 1,dni: 1,
-    },
-    {
-        username: 'Anailia95', nombre: 'Analia', apellido: 'Manzana', edad: 33,dni: 5555555,
-    },
-    {
-        username: 'EdgarAP09', nombre: 'Edgar Allan', apellido: 'Poe', edad: 40, dni: 666666666,  
-    },
-    {
-        username: 'Beetho', nombre: 'Ludwig van', apellido: 'Beethoven', edad: 56, dni: 99999999999,  
-    },
-    {
-        username: 'MarxK', nombre: 'Karl', apellido: 'Marx', edad: 64, dni: 8888888,
-    },
-    {
-        username: 'theMaieCurie', nombre: 'Marie', apellido: 'Curie', edad: 66, dni: 444444444,
-    }
-]
+const baseDeDatos = [
+    { nombreUsuario: '1', nombre: '1', apellido: '1', edad: 1, dni: 1 },
+    { nombreUsuario: 'Anailia95', nombre: 'Analia', apellido: 'Manzana', edad: 33, dni: 5555555 },
+    { nombreUsuario: 'EdgarAP09', nombre: 'Edgar Allan', apellido: 'Poe', edad: 40, dni: 666666666 },
+    { nombreUsuario: 'Beetho', nombre: 'Ludwig van', apellido: 'Beethoven', edad: 56, dni: 99999999999 },
+    { nombreUsuario: 'MarxK', nombre: 'Karl', apellido: 'Marx', edad: 64, dni: 8888888 },
+    { nombreUsuario: 'theMaieCurie', nombre: 'Marie', apellido: 'Curie', edad: 66, dni: 444444444 }
+];
 
 // Variables
-let userName;
-let nombreUser;
-let apellidoUser;
-let edadUser;
-let dniUser;
-let credito;
-let cantCuotas;
-let interes;
+let nombreUsuario, nombre, apellido, edad, dni, credito, cantidadCuotas, tasaInteres;
 
 // Funciones
 // Función constructora
-function Usuario(username, nombre, apellido, edad, dni) {
-    this.username = username;
+function Usuario(nombreUsuario, nombre, apellido, edad, dni) {
+    this.nombreUsuario = nombreUsuario;
     this.nombre = nombre;
     this.apellido = apellido;
     this.edad = edad;
@@ -40,62 +21,59 @@ function Usuario(username, nombre, apellido, edad, dni) {
 }
 
 // Función para verificar si un usuario existe en la base de datos
-function usuarioExiste(username, nombre, apellido) {
-    return database.find(user => user.username === username && user.nombre === nombre && user.apellido === apellido);
+function usuarioExiste(nombreUsuario, nombre, apellido) {
+    return baseDeDatos.find(user => user.nombreUsuario === nombreUsuario && user.nombre === nombre && user.apellido === apellido);
 }
 
 // Función para calcular el plan de pago
-function calcularPlanDePago(credito, cantCuotas, interes) {
+function calcularPlanDePago(credito, cantidadCuotas, tasaInteres) {
     let calculoTotalInteres = 0;
-    for (let i = 1; i <= cantCuotas; i++) {
-        let cuotaSinInteres = credito / cantCuotas;
-        let interesCuota = (credito * interes / 100) / 12; // Interés mensual
+    let resultado = '';
+    for (let i = 1; i <= cantidadCuotas; i++) {
+        let cuotaSinInteres = credito / cantidadCuotas;
+        let interesCuota = (credito * tasaInteres / 100) / 12; // Interés mensual
         let cuotaConInteres = cuotaSinInteres + interesCuota;
         calculoTotalInteres += interesCuota;
-        console.log(`En la cuota ${i} usted habrá pagado ${cuotaConInteres.toFixed(2)}`);
+        resultado += `En la cuota ${i} usted habrá pagado ${cuotaConInteres.toFixed(2)}<br>`;
     }
-    console.log(`En total usted habrá pagado ${(credito + calculoTotalInteres).toFixed(2)}`);
+    resultado += `En total usted habrá pagado ${(credito + calculoTotalInteres).toFixed(2)}`;
+    document.getElementById('resultado').innerHTML = resultado;
 }
 
+// Eventos
+document.getElementById('enviar').addEventListener('click', function() {
+    const registrado = document.getElementById('registrado').value;
+    nombreUsuario = document.getElementById('nombreUsuario').value;
+    nombre = document.getElementById('nombre').value;
+    apellido = document.getElementById('apellido').value;
+    edad = parseInt(document.getElementById('edad').value);
+    dni = parseInt(document.getElementById('dni').value);
+    credito = parseFloat(document.getElementById('credito').value);
+    cantidadCuotas = parseInt(document.getElementById('cuotas').value);
+    tasaInteres = parseFloat(document.getElementById('interes').value);
 
-//programa
-let siOrNo = prompt("Bienvenido a Financiera KIKI, ¿usted está registrado? si/no").toLowerCase();
-
-while (!(siOrNo === "si" || siOrNo === "no")) {
-    siOrNo = prompt("Por favor, responda con 'si' o 'no'. ¿Usted está registrado? si/no").toLowerCase();
-}
-
-if (siOrNo === "si"){
-    userName = prompt("Ingrese su nombre de usuario: ");
-    nombreUser = prompt("Ingrese su nombre: ");
-    apellidoUser = prompt("Ingrese su apellido: ");
-    edadUser = parseInt(prompt("Ingrese su edad: "));
-    if (usuarioExiste(userName, nombreUser, apellidoUser)) {
-        // Solicitar detalles del crédito
-        credito = parseFloat(prompt("¿Cuánto crédito desea solicitar?"));
-        cantCuotas = parseInt(prompt("¿En cuántas cuotas desea pagarlo?"));
-        interes = parseFloat(prompt("Ingrese la tasa de interés anual: "));
-        // Calcular el plan de pago
-        calcularPlanDePago(credito, cantCuotas, interes);
+    if (registrado === 'si') {
+        if (usuarioExiste(nombreUsuario, nombre, apellido)) {
+            calcularPlanDePago(credito, cantidadCuotas, tasaInteres);
+        } else {
+            alert('Los datos no existen en la base de datos.');
+        }
     } else {
-        alert("Los datos no existen en la base de datos.");
+        if (!isNaN(edad) && !isNaN(dni) && edad >= 18) {
+            let nuevoUsuario = new Usuario(nombreUsuario, nombre, apellido, edad, dni);
+            baseDeDatos.push(nuevoUsuario);
+            localStorage.setItem('baseDeDatos', JSON.stringify(baseDeDatos));
+            calcularPlanDePago(credito, cantidadCuotas, tasaInteres);
+        } else {
+            alert('Edad o DNI inválidos.');
+        }
     }
-} else if (siOrNo === "no") {
-    userName = prompt("Ingrese su nombre de usuario: ");
-    nombreUser = prompt("Ingrese su nombre: ");
-    apellidoUser = prompt("Ingrese su apellido: ");
-    edadUser = parseInt(prompt("Ingrese su edad: "));
-    dniUser = parseInt(prompt("Ingrese su dni: "));
-    if (!isNaN(edadUser) && !isNaN(dniUser) && edadUser >= 18) {
-        let nuevoUsuario = new Usuario(userName, nombreUser, apellidoUser, edadUser, dniUser);
-        database.push(nuevoUsuario);
-        // Solicitar detalles del crédito
-        credito = parseFloat(prompt("¿Cuánto crédito desea solicitar?"));
-        cantCuotas = parseInt(prompt("¿En cuántas cuotas desea pagarlo?"));
-        interes = parseFloat(prompt("Ingrese la tasa de interés anual: "));
-        // Calcular el plan de pago
-        calcularPlanDePago(credito, cantCuotas, interes);
-    } else {
-        alert("Edad o DNI inválidos.");
+});
+
+// Cargar datos del localStorage si existen
+window.onload = function() {
+    if (localStorage.getItem('baseDeDatos')) {
+        const baseDeDatosAlmacenada = JSON.parse(localStorage.getItem('baseDeDatos'));
+        baseDeDatosAlmacenada.forEach(user => baseDeDatos.push(user));
     }
-}
+};

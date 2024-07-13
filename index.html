@@ -1,16 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./CSS/styles.css">
-    <title>Financiera Cookie</title>
+    <title>Inicio</title>
 </head>
 <body>
-    <h1>Financiera Cookie</h1>
-    <img src="./multimedia/El imprescindible perfil del Auditor financiero en la empresa.jpeg" alt="">
-    <h2>Solicita tu credito desde 1 millón de pesos hasta 10 millones de pesos en la cantidad de cuotas que vos quieras</h2>
-    <p>Te pedimos unos datos para saber cuánto podemos prestarte</p>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="./index.html">Inicio</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section>
+        <h1>Calculadora financiera KIKI</h1>
+        <div class="Bienvenida">
+            <p>Bienvenido a Financiera KIKI</p>
+        </div>
+        <div>
+            <form id="formularioUsuario">
+                <label for="registrado">¿Está registrado?</label>
+                <select id="registrado" name="registrado">
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <div id="detallesUsuario">
+                    <input type="text" id="nombreUsuario" name="nombreUsuario" placeholder="Nombre de usuario">
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre">
+                    <input type="text" id="apellido" name="apellido" placeholder="Apellido">
+                    <input type="number" id="edad" name="edad" placeholder="Edad">
+                    <input type="number" id="dni" name="dni" placeholder="DNI">
+                </div>
+                <div id="detallesCredito">
+                    <input type="number" id="credito" name="credito" placeholder="Cantidad de crédito">
+                    <input type="number" id="cuotas" name="cuotas" placeholder="Número de cuotas">
+                    <input type="number" id="interes" name="interes" placeholder="Tasa de interés anual">
+                </div>
+                <button type="button" id="enviar">Enviar</button>
+            </form>
+        </div>
+        <div id="resultado"></div>
+    </section>
     <script src="./JS/index.js"></script>
 </body>
 </html>

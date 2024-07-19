@@ -5,19 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./CSS/styles.css">
     <title>Inicio</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="./index.html">Inicio</a></li>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#calculadora">Calculadora</a></li>
             </ul>
         </nav>
     </header>
-    <section>
+
+    <section id="inicio">
+        <h1>Bienvenido</h1>
+        <button>Conócenos!</button>
+    </section>
+
+    <section id="nosotros">
+        <div class="container">
+            <div class="img-container"></div>
+            <div class="texto-somos-kiki">
+                <h2>Somos <span class="color-acento">Financiera Kiki</span></h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium eos atque excepturi cupiditate magni sunt exercitationem, commodi eaque vel? Similique voluptatibus molestias sunt excepturi officia, saepe optio alias asperiores aperiam atque assumenda dolores impedit deserunt explicabo porro? Recusandae laborum iure eius corporis magni adipisci suscipit dolor, architecto qui corrupti beatae!</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculadora">
         <h1>Calculadora financiera KIKI</h1>
         <div class="Bienvenida">
-            <p>Bienvenido a Financiera KIKI</p>
+            <p>Calculadora</p>
         </div>
         <div>
             <form id="formularioUsuario">
@@ -43,6 +62,7 @@
         </div>
         <div id="resultado"></div>
     </section>
+
     <script src="./JS/index.js"></script>
 </body>
 </html>

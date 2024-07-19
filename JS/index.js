@@ -1,13 +1,5 @@
-const baseDeDatos = [
-    { nombreUsuario: '1', nombre: '1', apellido: '1', edad: 1, dni: 1 },
-    { nombreUsuario: 'Anailia95', nombre: 'Analia', apellido: 'Manzana', edad: 33, dni: 5555555 },
-    { nombreUsuario: 'EdgarAP09', nombre: 'Edgar Allan', apellido: 'Poe', edad: 40, dni: 666666666 },
-    { nombreUsuario: 'Beetho', nombre: 'Ludwig van', apellido: 'Beethoven', edad: 56, dni: 99999999999 },
-    { nombreUsuario: 'MarxK', nombre: 'Karl', apellido: 'Marx', edad: 64, dni: 8888888 },
-    { nombreUsuario: 'theMaieCurie', nombre: 'Marie', apellido: 'Curie', edad: 66, dni: 444444444 }
-];
-
 // Variables
+let baseDeDatos = [];
 let nombreUsuario, nombre, apellido, edad, dni, credito, cantidadCuotas, tasaInteres;
 
 // Funciones
@@ -37,11 +29,41 @@ function calcularPlanDePago(credito, cantidadCuotas, tasaInteres) {
         resultado += `En la cuota ${i} usted habrá pagado ${cuotaConInteres.toFixed(2)}<br>`;
     }
     resultado += `En total usted habrá pagado ${(credito + calculoTotalInteres).toFixed(2)}`;
-    document.getElementById('resultado').innerHTML = resultado;
+    return resultado;
 }
 
-// Eventos
-document.getElementById('enviar').addEventListener('click', function() {
+// Función para cargar datos del JSON
+function cargarDatos() {
+    return new Promise((resolve, reject) => {
+        fetch('baseDeDatos.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al cargar los datos');
+                }
+                return response.json();
+            })
+            .then(data => {
+                baseDeDatos = data;
+                const baseDeDatosAlmacenada = JSON.parse(localStorage.getItem('baseDeDatos'));
+                if (baseDeDatosAlmacenada) {
+                    baseDeDatos = baseDeDatos.concat(baseDeDatosAlmacenada);
+                }
+                resolve();
+            })
+            .catch(error => reject(error));
+    });
+}
+
+// Función para guardar datos en localStorage
+function guardarDatos() {
+    return new Promise((resolve) => {
+        localStorage.setItem('baseDeDatos', JSON.stringify(baseDeDatos));
+        resolve();
+    });
+}
+
+// Función para manejar el envío del formulario
+async function manejarEnvioFormulario() {
     const registrado = document.getElementById('registrado').value;
     nombreUsuario = document.getElementById('nombreUsuario').value;
     nombre = document.getElementById('nombre').value;
@@ -52,28 +74,61 @@ document.getElementById('enviar').addEventListener('click', function() {
     cantidadCuotas = parseInt(document.getElementById('cuotas').value);
     tasaInteres = parseFloat(document.getElementById('interes').value);
 
-    if (registrado === 'si') {
-        if (usuarioExiste(nombreUsuario, nombre, apellido)) {
-            calcularPlanDePago(credito, cantidadCuotas, tasaInteres);
+    try {
+        if (registrado === 'si') {
+            const usuario = usuarioExiste(nombreUsuario, nombre, apellido);
+            if (usuario) {
+                const resultado = calcularPlanDePago(credito, cantidadCuotas, tasaInteres);
+                Swal.fire({
+                    title: 'Plan de Pago Calculado',
+                    html: resultado,
+                    icon: 'success'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Los datos no existen en la base de datos.',
+                    icon: 'error'
+                });
+            }
         } else {
-            alert('Los datos no existen en la base de datos.');
+            if (!isNaN(edad) && !isNaN(dni) && edad >= 18) {
+                let nuevoUsuario = new Usuario(nombreUsuario, nombre, apellido, edad, dni);
+                baseDeDatos.push(nuevoUsuario);
+                await guardarDatos();
+                const resultado = calcularPlanDePago(credito, cantidadCuotas, tasaInteres);
+                Swal.fire({
+                    title: 'Usuario Registrado y Plan de Pago Calculado',
+                    html: resultado,
+                    icon: 'success'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Edad o DNI inválidos.',
+                    icon: 'error'
+                });
+            }
         }
-    } else {
-        if (!isNaN(edad) && !isNaN(dni) && edad >= 18) {
-            let nuevoUsuario = new Usuario(nombreUsuario, nombre, apellido, edad, dni);
-            baseDeDatos.push(nuevoUsuario);
-            localStorage.setItem('baseDeDatos', JSON.stringify(baseDeDatos));
-            calcularPlanDePago(credito, cantidadCuotas, tasaInteres);
-        } else {
-            alert('Edad o DNI inválidos.');
-        }
+    } catch (error) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema con el procesamiento de los datos.',
+            icon: 'error'
+        });
     }
-});
+}
 
-// Cargar datos del localStorage si existen
-window.onload = function() {
-    if (localStorage.getItem('baseDeDatos')) {
-        const baseDeDatosAlmacenada = JSON.parse(localStorage.getItem('baseDeDatos'));
-        baseDeDatosAlmacenada.forEach(user => baseDeDatos.push(user));
-    }
+// Eventos
+document.getElementById('enviar').addEventListener('click', manejarEnvioFormulario);
+
+// Cargar datos del JSON y localStorage al cargar la página
+window.onload = () => {
+    cargarDatos()
+        .then(() => {
+            console.log('Datos cargados exitosamente.');
+        })
+        .catch(error => {
+            console.error('Error al cargar los datos:', error);
+        });
 };

@@ -1,0 +1,8 @@
+[
+    { "nombreUsuario": "1", "nombre": "1", "apellido": "1", "edad": 1, "dni": 1 },
+    { "nombreUsuario": "Anailia95", "nombre": "Analia", "apellido": "Manzana", "edad": 33, "dni": 5555555 },
+    { "nombreUsuario": "EdgarAP09", "nombre": "Edgar Allan", "apellido": "Poe", "edad": 40, "dni": 666666666 },
+    { "nombreUsuario": "Beetho", "nombre": "Ludwig van", "apellido": "Beethoven", "edad": 56, "dni": 99999999999 },
+    { "nombreUsuario": "MarxK", "nombre": "Karl", "apellido": "Marx", "edad": 64, "dni": 8888888 },
+    { "nombreUsuario": "theMaieCurie", "nombre": "Marie", "apellido": "Curie", "edad": 66, "dni": 444444444 }
+]
